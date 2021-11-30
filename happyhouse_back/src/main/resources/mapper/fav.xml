@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.FavMapper">
+
+	<select id="like" parameterType="int">
+		update `housedeal`
+		set `like` = `like`+1
+		where no = #{aptno}
+	</select>
+	
+	<select id="CancleLikeNum" parameterType="int">
+		update `housedeal`
+		set `like` = `like`-1
+		where no = #{aptno}
+	</select>
+
+	<select id="searchLike" parameterType="Favorite" resultType="int">
+        select count(*)
+        from favorite
+        where userid = #{userid} and aptno = #{aptno} 
+    </select>
+
+    <insert id="doLike" parameterType="Favorite">
+        insert into favorite (userid, aptno)
+        values (#{userid}, #{aptno});
+    </insert>
+    
+    <delete id="cancleLike" parameterType="Favorite">
+        delete from favorite
+        where userid = #{userid} and aptno = #{aptno}
+    </delete>
+    
+    <select id="selectLike" parameterType="String" resultType="int">
+        select aptno
+        from favorite
+        where userid=#{userid}
+    </select>
+    
+    <select id="selectAptLike" parameterType="Favorite" resultType="int">
+        select count(*)
+        from favorite
+        where userid=#{userid} and aptno = #{aptno}
+    </select>
+    
+
+</mapper>

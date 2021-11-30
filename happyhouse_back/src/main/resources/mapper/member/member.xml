@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.MemberMapper">
+
+	<select id="login" parameterType="MemberDto" resultType="MemberDto">
+		select username, userid, userpwd, userphone, jibunAdd, roadAdd, restAdd, email, grade, aboutMe
+		from member
+		where userid = #{userid} and userpwd = #{userpwd}
+	</select>
+	<select id="searchLike" parameterType="Favorite" resultType="int">
+        select count(*)
+        from favorite
+        where userid = #{userid} and aptno = #{aptno} 
+    </select>
+	
+	<insert id="regist" parameterType="MemberDto">
+		insert into member (userid, userpwd, username, userphone, jibunAdd, email, grade, roadAdd, restAdd, aboutMe)
+		values (#{userid}, #{userpwd}, #{username}, #{userphone}, #{jibunAdd}, #{email}, #{grade}, #{roadAdd}, #{restAdd}, #{aboutMe})
+	</insert>
+	
+	<update id="updateProfile" parameterType="MemberDto">
+		update member set userpwd=#{userpwd}, username=#{username}, userphone=#{userphone}, jibunAdd=#{jibunAdd},email=#{email}, grade=#{grade}, roadAdd=#{roadAdd}, restAdd=#{restAdd}, aboutMe=#{aboutMe}
+		where userid=#{userid}
+		
+	</update>
+    <insert id="doLike" parameterType="Favorite">
+        insert into favorite (userid, aptno)
+        values (#{userid}, #{aptno});
+    </insert>
+    
+    <delete id="cancleLike" parameterType="Favorite">
+        delete from favorite
+        where userid = #{userid} and aptno = #{aptno}
+    </delete>
+</mapper>

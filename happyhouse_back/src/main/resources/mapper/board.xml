@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper의 namespace 는 이 xml을 사용할 인터페이스 패키기 경로를 준다. -->
+<mapper namespace="com.ssafy.happyhouse.model.mapper.BoardMapper">
+	
+	<!-- id : 인터페이스의 메소드 명 / parameterType : 인터페이스 메소드의 파라미터 타입 / resultType : 인터페이스 메소드의 반환 타입 -->
+	<select id="select" resultType="Board">
+		select *
+		from board
+		<choose>
+		  <when test="word == null">
+		  </when>
+		  <when test="key == 'title'">
+		    where subject like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'content'">
+		  	where content like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'titleNContent'">
+		  	where subject like concat('%', #{word}, '%')
+		  	or content like concat('%', #{word}, '%')
+		  </when>
+		</choose>
+		limit ${begin}, ${listSize}
+	</select>
+	
+	<select id="selectCnt" resultType="int">
+		select count(*)
+		from board
+		<choose>
+		  <when test="word == null">
+		  </when>
+		  <when test="key == 'title'">
+		    where subject like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'content'">
+		  	where content like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'titleNContent'">
+		  	where subject like concat('%', #{word}, '%')
+		  	or content like concat('%', #{word}, '%')
+		  </when>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		insert into board(wdate, subject, content, count)
+		values (now(), #{subject}, #{content}, 0)
+	</insert>
+	
+	<select id="boardInfo" resultType="Board">
+		select *
+		from board
+		where idx = #{boardidx}
+	</select>
+	
+	<update id="increaseCount">
+		update board
+		set count = count+1
+		where idx = #{boardIdx}
+	</update>
+	
+	<select id="lastIdx" resultType="int">
+		select idx
+		from board
+		order by idx desc
+		limit 1
+	</select>
+	
+	<update id="boardModify">
+		update board
+		set wdate = now(),
+			subject = #{subject},
+			content = #{content}
+		where idx = #{idx}
+	</update>
+	
+	<delete id="boardDelete">
+		delete
+		from board
+		where idx = #{boardIdx}
+	</delete>
+</mapper>

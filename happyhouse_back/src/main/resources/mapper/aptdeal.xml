@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper의 namespace 는 이 xml을 사용할 인터페이스 패키기 경로를 준다. -->
+<mapper namespace="com.ssafy.happyhouse.model.mapper.AptMapper">
+	
+	<!-- id : 인터페이스의 메소드 명 / parameterType : 인터페이스 메소드의 파라미터 타입 / resultType : 인터페이스 메소드의 반환 타입 -->
+	<select id="selectAllApt" resultType="AptDeal">
+		select * 
+		from housedeal
+		where ${key} like concat('%', #{word}, '%')
+		order by no limit ${begin}, ${listSize}
+	</select>
+	
+	<select id="selectAptCount" resultType="int">
+		select count(*)
+		from housedeal
+		where ${key} like concat('%', #{word}, '%')
+	</select>
+	
+	<select id="selectApt" resultType="aptDeal" parameterType="int">
+		select *
+		from housedeal
+		where no=#{no}
+	</select>
+	
+	<insert id="insertIArea" parameterType="interAreaParams">
+		insert into interestArea values(#{id}, #{key}, #{search})
+	</insert>
+	
+	<select id="selectIArea" resultType="interAreaParams" parameterType="String">
+		select * from interestArea
+		where id=#{id}		
+	</select>
+	
+	<delete id="deleteIArea">
+		delete from interestArea
+		where id=#{id} and search=#{search}
+	</delete>
+	
+	<select id="aptInfoList" resultType="AptInfo">
+		select *
+		from houseinfo
+	</select>
+	
+	<select id="aptInfoSearch" resultType="AptInfo">
+		select *
+		from houseinfo
+		<if test="key == 'dong'">
+			where dong = #{word}
+		</if>
+		<if test="key == 'AptName'">
+			where AptName like concat('%', #{word}, '%')
+		</if>
+	</select>
+	
+	<select id="aptDealList" resultType="AptDeal">
+		select *
+		from housedeal
+		where dong = #{dong}
+		and aptName = #{aptName}
+	</select>
+	
+	<select id="dong" resultType="string">
+		select distinct dong
+		from houseinfo 
+	</select>
+	
+	<select id="like" parameterType="int">
+		update `housedeal`
+		set `like` = `like`+1
+		where no = #{no}
+	</select>
+	
+	<select id="aptInfoSearchCoor" resultType="AptInfo">
+		select *
+		from houseinfo
+		where lat between #{sLat} and #{lLat}
+		and   lng between #{sLng} and #{lLng}
+	</select>
+	
+	<select id="selectHot" resultType="AptDeal">
+    	select *
+    	from `housedeal`
+    	order by `like` desc
+    	limit 10
+    </select>
+    
+    <select id="aptInfo" resultType="AptInfo">
+    	select *
+    	from houseinfo
+    	where dong = #{dong}
+    	and   AptName = #{aptName}
+    </select>
+    
+    <select id="aptInfoNo" resultType="AptInfo">
+    	select *
+    	from houseinfo
+    	where no = #{no}
+    </select>
+    
+    <select id="sigu" resultType="string">
+    	select distinct concat(city, ' ', gugun)
+    	from dongcode
+		where left(dongcode, 5) = #{code};
+    </select>
+</mapper>

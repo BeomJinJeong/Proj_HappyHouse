@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.happyhouse.model.mapper.QnAMapper">
+	<select id="qnaList" resultType="QnA">
+		select *
+		from question
+		<choose>
+			<when test="word == null">
+			</when>
+			<when test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</when>
+			<when test="key == 'content'">
+				where content like concat('%', #{word}, '%')
+			</when>
+			<when test="key == 'titleAndContent'">
+				where content like concat('%' #{word}, '%')
+				or
+				title like concat('%', #{word}, '%')
+			</when>
+		</choose>
+		limit ${begin}, ${listSize}
+	</select>
+	
+	<select id="qnaCnt" resultType="int">
+		select count(*)
+		from question
+		<choose>
+		  <when test="word == null">
+		  </when>
+		  <when test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</when>
+			<when test="key == 'content'">
+				where content like concat('%', #{word}, '%')
+			</when>
+			<when test="key == 'titleAndContent'">
+				where content like concat('%' #{word}, '%')
+				or
+				title like concat('%', #{word}, '%')
+			</when>
+		</choose>
+	</select>
+	
+	<insert id="qnaRegister" parameterType="QnA">
+		insert into question(title, content, date, userid)
+		values (#{title}, #{content}, now(), #{userid})
+	</insert>
+	
+	<select id="qnaInfo" parameterType="int" resultType="QnA">
+		select * from question where no = #{qnaNo}
+	</select>
+	
+	<update id="qnaModify" parameterType="QnA">
+		update question
+		set title = #{title},
+			content = #{content},
+			date = now()
+		where no = #{no}
+	</update>
+	
+	<delete id="qnaDelete" parameterType="int">
+		delete from question where no = #{qnaNo}
+	</delete>
+	
+	<select id="qnaAnswerList" parameterType="int" resultType="Answer">
+		select * from answer
+		where quesno = #{qnaNo}
+	</select>
+</mapper>

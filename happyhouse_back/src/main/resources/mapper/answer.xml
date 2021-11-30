@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.happyhouse.model.mapper.AnswerMapper">
+
+	<insert id="answerRegister" parameterType="Answer">
+		insert into answer(content, date, quesno)
+		values (#{content}, now(), #{quesno})
+	</insert>
+	
+	<delete id="answerDelete" parameterType="int">
+		delete from answer where no = #{answerNo}
+	</delete>
+	
+	<select id="listAll" resultType="Answer" parameterType="int">
+		select * from answer
+		where quesno = ${quesNo}
+	</select>
+	
+	
+	<select id="quesNo" resultType="int" parameterType="int">
+		select quesno from answer
+		where no = #{answerNo}
+	</select>
+</mapper>

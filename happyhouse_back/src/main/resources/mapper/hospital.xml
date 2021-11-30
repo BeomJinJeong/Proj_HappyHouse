@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper의 namespace 는 이 xml을 사용할 인터페이스 패키기 경로를 준다. -->
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HospitalMapper">
+	
+	<!-- id : 인터페이스의 메소드 명 / parameterType : 인터페이스 메소드의 파라미터 타입 / resultType : 인터페이스 메소드의 반환 타입 -->
+	<select id="select" resultType="Hospital">
+		select *
+		from safehospital
+		<choose>
+		  <when test="word == null">
+		  </when>
+		  <when test="key == 'hospital_name'">
+		    where hospital_name like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'gungu'">
+		  	where gungu like concat('%', #{word}, '%')
+		  	or
+		  	sido like concat('%', #{word}, '%')
+		  </when>
+		</choose>
+		limit ${begin}, ${listSize}
+	</select>
+	
+	<select id="selectCnt" resultType="int">
+		select count(*)
+		from safehospital
+		<choose>
+		  <when test="word == null">
+		  </when>
+		  <when test="key == 'hospital_name'">
+		    where hospital_name like concat('%', #{word}, '%')
+		  </when>
+		  <when test="key == 'gungu'">
+		  	where gungu like concat('%', #{word}, '%')
+		  	or
+		  	sido like concat('%', #{word}, '%')
+		  </when>
+		</choose>
+	</select>
+</mapper>
